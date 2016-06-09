@@ -91,9 +91,7 @@ def process_results(results, file):
             for t, ceils in enumerate(v[2]):
                 result_list_dict.append({"method": k, "rts": rts_id, "task": t, "ceils": ceils})
 
-    print(sched_results)
-
-    # Generate Pandas DataFrame for easy data analysis
+    # Generate Pandas DataFrame for data analysis
     result_df = pd.DataFrame(result_list_dict)
 
     import os
@@ -101,23 +99,28 @@ def process_results(results, file):
     pdf_file = os.path.splitext(file)[0] + '.pdf'
 
     # Plot
-    plt.rc('text', usetex=True)
-    plt.rc('font', family='serif')
-    fig, ax = plt.subplots(1, 1)
-    ax.margins(0.5, 0.5)
-    ax.set_ylabel("avg. ceils")
-    ax.set_xlabel("task")
-    labels = []
-    for m, mg in result_df.groupby(["method"]):
-        labels.append(m)
-        mg.groupby(["task"])[["ceils"]].mean().plot(ax=ax)
-    ax.legend(labels, numpoints=1, loc="best", prop={'size': 9})
-    plt.savefig(pdf_file, bbox_inches="tight")
-    plt.close(fig)
+    #plt.rc('text', usetex=True)
+    #plt.rc('font', family='serif')
+    #fig, ax = plt.subplots(1, 1)
+    #ax.margins(0.5, 0.5)
+    #ax.set_ylabel("avg. ceils")
+    #ax.set_xlabel("task")
+    #labels = []
+    #for m, mg in result_df.groupby(["method"]):
+    #    labels.append(m)
+    #    mg.groupby(["task"])[["ceils"]].mean().plot(ax=ax)
+    #ax.legend(labels, numpoints=1, loc="best", prop={'size': 9})
+    #plt.savefig(pdf_file, bbox_inches="tight")
+    #plt.close(fig)
+    
+    print((result_df.groupby(['method', 'rts'], as_index=False).sum().groupby('method')['ceils'].describe()))
+    
+    #for m, mg in result_df.groupby(["method"]):
+    #    (mg.groupby(["rts"]).sum())
 
     # Save DataFrame to file
-    with open(dump_file, "wb") as outfile:
-        pickle.dump(result_df, outfile)
+    #with open(dump_file, "wb") as outfile:
+    #    pickle.dump(result_df, outfile)
 
 
 def test_methods(rts):
